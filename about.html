@@ -7,119 +7,83 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Shrikhand&family=Noto+Serif+JP:wght@400;700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
   <style>
-    :root {
-      --red: #C0392B; --dark-red: #922B21; --cream: #FDF6EC;
-      --warm-tan: #E8D5B0; --charcoal: #1C1C1C; --muted: #6B5C4C; --accent: #E67E22;
-    }
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-    body { font-family: 'DM Sans', sans-serif; background: var(--cream); color: var(--charcoal); }
+    :root { --red:#C0392B; --dark-red:#922B21; --cream:#FDF6EC; --warm-tan:#E8D5B0; --charcoal:#1C1C1C; --muted:#6B5C4C; --accent:#E67E22; }
+    * { margin:0; padding:0; box-sizing:border-box; }
+    body { font-family:'DM Sans',sans-serif; background:var(--cream); color:var(--charcoal); }
 
-    nav {
-      position: fixed; top: 0; width: 100%; z-index: 100;
-      background: rgba(28,28,28,0.97); display: flex; align-items: center;
-      justify-content: space-between; padding: 0 5%; height: 64px;
-      border-bottom: 2px solid var(--red);
-    }
-    .nav-logo { font-family: 'Shrikhand', cursive; color: var(--cream); font-size: 1.6rem; text-decoration: none; }
-    .nav-logo span { color: var(--red); }
-    .nav-links { display: flex; gap: 2rem; list-style: none; }
-    .nav-links a { color: var(--warm-tan); text-decoration: none; font-size: 0.9rem; font-weight: 500; letter-spacing: 0.5px; text-transform: uppercase; transition: color 0.2s; }
-    .nav-links a:hover, .nav-links a.active { color: var(--red); }
-    .nav-cta { background: var(--red); color: #fff; padding: 8px 22px; border-radius: 2px; text-decoration: none; font-weight: 500; font-size: 0.9rem; }
-    .nav-cta:hover { background: var(--dark-red); }
+    nav { position:fixed; top:0; width:100%; z-index:100; background:rgba(28,28,28,0.97); display:flex; align-items:center; justify-content:space-between; padding:0 5%; height:68px; border-bottom:2px solid var(--red); }
+    .nav-logo { text-decoration:none; display:flex; flex-direction:column; justify-content:center; }
+    .nav-logo-main { font-family:'Shrikhand',cursive; color:var(--cream); font-size:1.5rem; line-height:1.1; }
+    .nav-logo-sub { color:var(--red); font-size:0.65rem; letter-spacing:2px; text-transform:uppercase; font-family:'DM Sans',sans-serif; font-weight:400; }
+    .nav-links { display:flex; gap:2rem; list-style:none; }
+    .nav-links a { color:var(--warm-tan); text-decoration:none; font-size:0.9rem; font-weight:500; letter-spacing:0.5px; text-transform:uppercase; transition:color 0.2s; }
+    .nav-links a:hover, .nav-links a.active { color:var(--red); }
+    .nav-cta { background:var(--red); color:#fff; padding:8px 22px; border-radius:2px; text-decoration:none; font-weight:500; font-size:0.9rem; }
 
-    .page-hero {
-      background: var(--charcoal); padding: 130px 8% 80px;
-      position: relative; overflow: hidden;
-    }
-    .page-hero::before {
-      content: 'ABOUT'; position: absolute; right: -2%; bottom: -10px;
-      font-family: 'Shrikhand', cursive; font-size: 18vw; color: rgba(255,255,255,0.03);
-      white-space: nowrap; pointer-events: none;
-    }
-    .page-hero-tag { color: var(--red); font-size: 0.75rem; letter-spacing: 4px; text-transform: uppercase; margin-bottom: 0.75rem; }
-    .page-hero h1 { font-family: 'Shrikhand', cursive; font-size: clamp(3rem, 7vw, 5.5rem); color: var(--cream); }
+    .page-hero { background:var(--charcoal); padding:130px 8% 80px; position:relative; overflow:hidden; }
+    .page-hero::before { content:'ABOUT'; position:absolute; right:-2%; bottom:-10px; font-family:'Shrikhand',cursive; font-size:18vw; color:rgba(255,255,255,0.03); pointer-events:none; }
+    .page-hero-tag { color:var(--red); font-size:0.75rem; letter-spacing:4px; text-transform:uppercase; margin-bottom:0.75rem; }
+    .page-hero h1 { font-family:'Shrikhand',cursive; font-size:clamp(3rem,7vw,5.5rem); color:var(--cream); }
 
-    section { padding: 80px 8%; }
+    section { padding:80px 8%; }
+    .section-tag { color:var(--red); font-size:0.75rem; letter-spacing:4px; text-transform:uppercase; margin-bottom:0.75rem; }
+    .section-title { font-family:'Shrikhand',cursive; font-size:clamp(2rem,4vw,3rem); margin-bottom:1rem; }
+    .section-sub { color:var(--muted); font-size:1rem; line-height:1.7; }
 
-    /* STORY */
-    .story-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 5rem; align-items: center; }
-    .story-img {
-      background: linear-gradient(135deg, #922B21, #e67e22);
-      border-radius: 4px; height: 460px;
-      display: flex; align-items: center; justify-content: center;
-      font-size: 8rem; position: relative; overflow: hidden;
-    }
-    .story-img::after { content: ''; position: absolute; inset:0; background: rgba(0,0,0,0.15); }
-    .story-tag { color: var(--red); font-size: 0.75rem; letter-spacing: 4px; text-transform: uppercase; margin-bottom: 1rem; }
-    .story-title { font-family: 'Shrikhand', cursive; font-size: clamp(2rem, 4vw, 3rem); margin-bottom: 1.5rem; }
-    .story-text { color: var(--muted); font-size: 1rem; line-height: 1.85; margin-bottom: 1.2rem; font-weight: 300; }
-    .story-signature { font-family: 'Noto Serif JP', serif; font-size: 1.1rem; color: var(--charcoal); margin-top: 1.5rem; }
+    .story-grid { display:grid; grid-template-columns:1fr 1fr; gap:5rem; align-items:center; }
+    .story-img { background:linear-gradient(135deg,#922B21,#e67e22); border-radius:4px; height:460px; display:flex; align-items:center; justify-content:center; font-size:8rem; position:relative; overflow:hidden; }
+    .story-img::after { content:''; position:absolute; inset:0; background:rgba(0,0,0,0.15); }
+    .story-text { color:var(--muted); font-size:1rem; line-height:1.85; margin-bottom:1.2rem; font-weight:300; }
+    .story-signature { font-family:'Noto Serif JP',serif; font-size:1.1rem; color:var(--charcoal); margin-top:1.5rem; }
 
-    /* TIMELINE */
-    .timeline { background: var(--charcoal); }
-    .timeline .section-title { font-family: 'Shrikhand', cursive; font-size: clamp(2rem,4vw,3rem); color: var(--cream); margin-bottom: 0.5rem; }
-    .timeline .section-sub { color: var(--warm-tan); font-size: 1rem; margin-bottom: 3.5rem; font-weight: 300; }
-    .timeline-list { position: relative; padding-left: 2px; }
-    .timeline-list::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 2px; background: var(--red); }
-    .tl-item { padding: 0 0 3rem 2.5rem; position: relative; }
-    .tl-item::before { content: ''; position: absolute; left: -6px; top: 4px; width: 14px; height: 14px; border-radius: 50%; background: var(--red); border: 2px solid var(--charcoal); }
-    .tl-year { color: var(--red); font-size: 0.75rem; letter-spacing: 3px; text-transform: uppercase; margin-bottom: 0.4rem; }
-    .tl-title { font-family: 'Noto Serif JP', serif; color: var(--cream); font-size: 1.1rem; font-weight: 700; margin-bottom: 0.5rem; }
-    .tl-text { color: #888; font-size: 0.9rem; line-height: 1.6; }
+    .timeline { background:var(--charcoal); }
+    .timeline .section-title { color:var(--cream); }
+    .timeline-list { position:relative; padding-left:2px; }
+    .timeline-list::before { content:''; position:absolute; left:0; top:0; bottom:0; width:2px; background:var(--red); }
+    .tl-item { padding:0 0 3rem 2.5rem; position:relative; }
+    .tl-item::before { content:''; position:absolute; left:-6px; top:4px; width:14px; height:14px; border-radius:50%; background:var(--red); border:2px solid var(--charcoal); }
+    .tl-year { color:var(--red); font-size:0.75rem; letter-spacing:3px; text-transform:uppercase; margin-bottom:0.4rem; }
+    .tl-title { font-family:'Noto Serif JP',serif; color:var(--cream); font-size:1.1rem; font-weight:700; margin-bottom:0.5rem; }
+    .tl-text { color:#888; font-size:0.9rem; line-height:1.6; }
 
-    /* TEAM */
-    .team-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 2rem; margin-top: 3rem; }
-    .team-card { text-align: center; }
-    .team-avatar {
-      width: 130px; height: 130px; border-radius: 50%;
-      margin: 0 auto 1.2rem;
-      background: linear-gradient(135deg, var(--warm-tan), var(--accent));
-      display: flex; align-items: center; justify-content: center;
-      font-size: 3.5rem; border: 3px solid var(--red);
-    }
-    .team-name { font-family: 'Noto Serif JP', serif; font-size: 1.05rem; font-weight: 700; margin-bottom: 0.3rem; }
-    .team-role { color: var(--red); font-size: 0.8rem; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 0.6rem; }
-    .team-bio { color: var(--muted); font-size: 0.88rem; line-height: 1.6; }
+    .team-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(240px,1fr)); gap:2rem; margin-top:3rem; }
+    .team-card { text-align:center; }
+    .team-avatar { width:130px; height:130px; border-radius:50%; margin:0 auto 1.2rem; background:linear-gradient(135deg,var(--warm-tan),var(--accent)); display:flex; align-items:center; justify-content:center; font-size:3.5rem; border:3px solid var(--red); }
+    .team-name { font-family:'Noto Serif JP',serif; font-size:1.05rem; font-weight:700; margin-bottom:0.3rem; }
+    .team-role { color:var(--red); font-size:0.8rem; letter-spacing:2px; text-transform:uppercase; margin-bottom:0.6rem; }
+    .team-bio { color:var(--muted); font-size:0.88rem; line-height:1.6; }
 
-    /* VALUES */
-    .values { background: #fff5e6; }
-    .values-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 2rem; margin-top: 3rem; }
-    .val-item { border-left: 3px solid var(--red); padding-left: 1.2rem; }
-    .val-num { font-family: 'Shrikhand', cursive; font-size: 2.5rem; color: var(--red); line-height: 1; margin-bottom: 0.3rem; }
-    .val-label { font-family: 'Noto Serif JP', serif; font-weight: 700; font-size: 1rem; margin-bottom: 0.4rem; }
-    .val-text { color: var(--muted); font-size: 0.88rem; line-height: 1.6; }
+    .values { background:#fff5e6; }
+    .values-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:2rem; margin-top:3rem; }
+    .val-item { border-left:3px solid var(--red); padding-left:1.2rem; }
+    .val-num { font-family:'Shrikhand',cursive; font-size:2.5rem; color:var(--red); line-height:1; margin-bottom:0.3rem; }
+    .val-label { font-family:'Noto Serif JP',serif; font-weight:700; font-size:1rem; margin-bottom:0.4rem; }
+    .val-text { color:var(--muted); font-size:0.88rem; line-height:1.6; }
 
-    footer { background: #111; color: var(--warm-tan); padding: 40px 8% 25px; text-align: center; }
-    .footer-logo-sm { font-family: 'Shrikhand', cursive; font-size: 1.4rem; color: var(--cream); margin-bottom: 1rem; }
-    .footer-logo-sm span { color: var(--red); }
-    .footer-links { display: flex; gap: 2rem; justify-content: center; flex-wrap: wrap; margin-bottom: 1.5rem; }
-    .footer-links a { color: #888; text-decoration: none; font-size: 0.85rem; transition: color 0.2s; }
-    .footer-links a:hover { color: var(--red); }
-    .footer-copy { color: #555; font-size: 0.8rem; border-top: 1px solid #222; padding-top: 1.2rem; }
+    footer { background:#111; color:var(--warm-tan); padding:40px 8% 25px; text-align:center; }
+    .footer-logo-sm { font-family:'Shrikhand',cursive; font-size:1.4rem; color:var(--cream); margin-bottom:0.2rem; }
+    .footer-logo-sub-sm { color:var(--red); font-size:0.65rem; letter-spacing:2px; text-transform:uppercase; margin-bottom:1rem; }
+    .footer-links { display:flex; gap:2rem; justify-content:center; flex-wrap:wrap; margin-bottom:1.5rem; }
+    .footer-links a { color:#888; text-decoration:none; font-size:0.85rem; transition:color 0.2s; }
+    .footer-links a:hover { color:var(--red); }
+    .footer-copy { color:#555; font-size:0.8rem; border-top:1px solid #222; padding-top:1.2rem; }
 
-    .section-tag { color: var(--red); font-size: 0.75rem; letter-spacing: 4px; text-transform: uppercase; margin-bottom: 0.75rem; }
-    .section-title { font-family: 'Shrikhand', cursive; font-size: clamp(2rem,4vw,3rem); margin-bottom: 1rem; }
-    .section-sub { color: var(--muted); font-size: 1rem; line-height: 1.7; max-width: 540px; }
-
-    @media(max-width: 768px) {
-      .story-grid { grid-template-columns: 1fr; }
-      .story-img { height: 260px; }
-      .nav-links { gap: 1rem; }
-    }
-    @media(max-width: 520px) { .nav-links { display: none; } }
+    @media(max-width:768px) { .story-grid{grid-template-columns:1fr} .story-img{height:260px} }
+    @media(max-width:520px) { .nav-links{display:none} }
   </style>
 </head>
 <body>
 
 <nav>
-  <a href="index.html" class="nav-logo">Tanuki<span>ラーメン</span></a>
+  <a href="index.html" class="nav-logo">
+    <span class="nav-logo-main">Tanuki Ramen</span>
+    <span class="nav-logo-sub">Authentic Japanese Noodles</span>
+  </a>
   <ul class="nav-links">
     <li><a href="index.html">Home</a></li>
     <li><a href="about.html" class="active">About</a></li>
     <li><a href="sales.html">Sales</a></li>
     <li><a href="order.html">Order</a></li>
-    <li><a href="testimonials.html">Reviews</a></li>
     <li><a href="contact.html">Contact</a></li>
   </ul>
   <a href="order.html" class="nav-cta">Order Now</a>
@@ -134,8 +98,8 @@
   <div class="story-grid">
     <div class="story-img"><span style="position:relative;z-index:2">👨‍🍳</span></div>
     <div>
-      <p class="story-tag">The Beginning</p>
-      <h2 class="story-title">One Bowl Changed Everything</h2>
+      <p class="section-tag">The Beginning</p>
+      <h2 class="section-title">One Bowl Changed Everything</h2>
       <p class="story-text">It was 2011. Our founder, Kenji Matsuda, sat in a tiny 8-seat ramen-ya in Fukuoka at 2am after missing his flight home. The bowl of tonkotsu placed in front of him — thick, cloudy, impossibly rich — changed his life forever.</p>
       <p class="story-text">He spent three years apprenticing under Master Hiroshi Yamamoto, learning to make broth from bones, noodles from flour, and perfection from patience. In 2014, Tanuki Ramen was born — a small pop-up that became a restaurant, and then a movement.</p>
       <p class="story-text">Today we craft hundreds of bowls daily, but every single one carries that same soul from that 2am discovery in Fukuoka.</p>
@@ -147,33 +111,13 @@
 <section class="timeline">
   <p class="section-tag" style="color:var(--red)">Our Journey</p>
   <h2 class="section-title">How We Got Here</h2>
-  <p class="section-sub" style="color:#888;margin-bottom:3rem">From a late-night bowl in Fukuoka to thousands of happy customers.</p>
+  <p style="color:#888;font-size:0.95rem;margin-bottom:3rem;font-weight:300">From a late-night bowl in Fukuoka to thousands of happy customers.</p>
   <div class="timeline-list">
-    <div class="tl-item">
-      <div class="tl-year">2011</div>
-      <div class="tl-title">The Revelation</div>
-      <div class="tl-text">Kenji discovers the world's best tonkotsu in a hole-in-the-wall in Fukuoka. Begins a three-year apprenticeship.</div>
-    </div>
-    <div class="tl-item">
-      <div class="tl-year">2014</div>
-      <div class="tl-title">First Pop-Up</div>
-      <div class="tl-text">Tanuki Ramen launches as a weekend pop-up in the Eastside Market. Lines stretch around the block every Saturday.</div>
-    </div>
-    <div class="tl-item">
-      <div class="tl-year">2016</div>
-      <div class="tl-title">Brick & Mortar</div>
-      <div class="tl-text">We open our first restaurant, seating 42. Fully booked for the next 8 months. Michelin Bib Gourmand awarded.</div>
-    </div>
-    <div class="tl-item">
-      <div class="tl-year">2019</div>
-      <div class="tl-title">Online Delivery</div>
-      <div class="tl-text">We launch delivery with insulated ramen kits — bringing our 18-hour broth to doorsteps across the city.</div>
-    </div>
-    <div class="tl-item">
-      <div class="tl-year">2025</div>
-      <div class="tl-title">New Chapter</div>
-      <div class="tl-text">Expanded menu, nationwide shipping kits & a new Tanuki ramen school for home cooks who want to learn the craft.</div>
-    </div>
+    <div class="tl-item"><div class="tl-year">2011</div><div class="tl-title">The Revelation</div><div class="tl-text">Kenji discovers the world's best tonkotsu in a hole-in-the-wall in Fukuoka. Begins a three-year apprenticeship.</div></div>
+    <div class="tl-item"><div class="tl-year">2014</div><div class="tl-title">First Pop-Up</div><div class="tl-text">Tanuki Ramen launches as a weekend pop-up. Lines stretch around the block every Saturday.</div></div>
+    <div class="tl-item"><div class="tl-year">2016</div><div class="tl-title">Brick & Mortar</div><div class="tl-text">We open our first restaurant, seating 42. Fully booked for eight months. Michelin Bib Gourmand awarded.</div></div>
+    <div class="tl-item"><div class="tl-year">2019</div><div class="tl-title">Online Delivery</div><div class="tl-text">We launch delivery with insulated ramen kits — bringing 18-hour broth to doorsteps across the city.</div></div>
+    <div class="tl-item"><div class="tl-year">2025</div><div class="tl-title">New Chapter</div><div class="tl-text">Expanded menu, nationwide shipping kits & a new Tanuki ramen school for home cooks.</div></div>
   </div>
 </section>
 
@@ -182,30 +126,10 @@
   <h2 class="section-title">Meet Our Team</h2>
   <p class="section-sub">Behind every bowl is a person who genuinely cares about the craft.</p>
   <div class="team-grid">
-    <div class="team-card">
-      <div class="team-avatar">👨‍🍳</div>
-      <div class="team-name">Kenji Matsuda</div>
-      <div class="team-role">Founder & Head Chef</div>
-      <div class="team-bio">Trained in Fukuoka, Tokyo & Sapporo. Keeper of the 18-hour broth recipe and all-around ramen philosopher.</div>
-    </div>
-    <div class="team-card">
-      <div class="team-avatar">👩‍🍳</div>
-      <div class="team-name">Yuki Tanaka</div>
-      <div class="team-role">Noodle Master</div>
-      <div class="team-bio">Third-generation noodle maker from Hokkaido. Yuki hand-rolls our daily dough at 5am, every single morning.</div>
-    </div>
-    <div class="team-card">
-      <div class="team-avatar">🧑‍💼</div>
-      <div class="team-name">Marcus Webb</div>
-      <div class="team-role">Operations Director</div>
-      <div class="team-bio">Former logistics engineer turned ramen enthusiast. Makes sure your bowl arrives hot and on time, every time.</div>
-    </div>
-    <div class="team-card">
-      <div class="team-avatar">👩‍🎨</div>
-      <div class="team-name">Rina Cho</div>
-      <div class="team-role">Creative & Brand</div>
-      <div class="team-bio">Designer, foodie & visual storyteller. Rina makes sure Tanuki looks as good as it tastes.</div>
-    </div>
+    <div class="team-card"><div class="team-avatar">👨‍🍳</div><div class="team-name">Kenji Matsuda</div><div class="team-role">Founder & Head Chef</div><div class="team-bio">Trained in Fukuoka, Tokyo & Sapporo. Keeper of the 18-hour broth recipe.</div></div>
+    <div class="team-card"><div class="team-avatar">👩‍🍳</div><div class="team-name">Yuki Tanaka</div><div class="team-role">Noodle Master</div><div class="team-bio">Third-generation noodle maker from Hokkaido. Hand-rolls dough at 5am every morning.</div></div>
+    <div class="team-card"><div class="team-avatar">🧑‍💼</div><div class="team-name">Marcus Webb</div><div class="team-role">Operations Director</div><div class="team-bio">Former logistics engineer turned ramen enthusiast. Makes sure your bowl arrives hot and on time.</div></div>
+    <div class="team-card"><div class="team-avatar">👩‍🎨</div><div class="team-name">Rina Cho</div><div class="team-role">Creative & Brand</div><div class="team-bio">Designer, foodie & visual storyteller. Makes sure Tanuki Ramen looks as good as it tastes.</div></div>
   </div>
 </section>
 
@@ -213,40 +137,24 @@
   <p class="section-tag">By The Numbers</p>
   <h2 class="section-title">Our Story In Stats</h2>
   <div class="values-grid">
-    <div class="val-item">
-      <div class="val-num">18+</div>
-      <div class="val-label">Hours Per Broth</div>
-      <div class="val-text">Every single broth is simmered at least 18 hours. No exceptions, no shortcuts.</div>
-    </div>
-    <div class="val-item">
-      <div class="val-num">12</div>
-      <div class="val-label">Menu Items</div>
-      <div class="val-text">From classic tonkotsu to seasonal specials — every item earns its place.</div>
-    </div>
-    <div class="val-item">
-      <div class="val-num">50K+</div>
-      <div class="val-label">Bowls Served</div>
-      <div class="val-text">Over 50,000 bowls of happiness since we opened our doors in 2014.</div>
-    </div>
-    <div class="val-item">
-      <div class="val-num">4.9★</div>
-      <div class="val-label">Average Rating</div>
-      <div class="val-text">Thousands of verified reviews. Our customers are our biggest marketing team.</div>
-    </div>
+    <div class="val-item"><div class="val-num">18+</div><div class="val-label">Hours Per Broth</div><div class="val-text">Every broth is simmered at least 18 hours. No exceptions, no shortcuts.</div></div>
+    <div class="val-item"><div class="val-num">12</div><div class="val-label">Menu Items</div><div class="val-text">From classic tonkotsu to seasonal specials — every item earns its place.</div></div>
+    <div class="val-item"><div class="val-num">50K+</div><div class="val-label">Bowls Served</div><div class="val-text">Over 50,000 bowls of happiness served since we opened in 2014.</div></div>
+    <div class="val-item"><div class="val-num">4.9★</div><div class="val-label">Average Rating</div><div class="val-text">Thousands of verified reviews from customers who keep coming back.</div></div>
   </div>
 </section>
 
 <footer>
-  <div class="footer-logo-sm">Tanuki<span>ラーメン</span></div>
+  <div class="footer-logo-sm">Tanuki Ramen</div>
+  <div class="footer-logo-sub-sm">Authentic Japanese Noodles</div>
   <div class="footer-links">
     <a href="index.html">Home</a>
     <a href="about.html">About</a>
     <a href="sales.html">Sales</a>
     <a href="order.html">Order</a>
-    <a href="testimonials.html">Reviews</a>
     <a href="contact.html">Contact</a>
   </div>
-  <div class="footer-copy">© 2025 Tanuki Ramen. All rights reserved.</div>
+  <div class="footer-copy">© 2025 Tanuki Ramen — Authentic Japanese Noodles. All rights reserved.</div>
 </footer>
 
 </body>

@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Reviews – Tanuki Ramen</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Shrikhand&family=Noto+Serif+JP:wght@400;700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --red: #C0392B; --dark-red: #922B21; --cream: #FDF6EC;
+      --warm-tan: #E8D5B0; --charcoal: #1C1C1C; --muted: #6B5C4C; --accent: #E67E22;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'DM Sans', sans-serif; background: var(--cream); color: var(--charcoal); }
+
+    nav {
+      position: fixed; top: 0; width: 100%; z-index: 100;
+      background: rgba(28,28,28,0.97); display: flex; align-items: center;
+      justify-content: space-between; padding: 0 5%; height: 64px;
+      border-bottom: 2px solid var(--red);
+    }
+    .nav-logo { font-family: 'Shrikhand', cursive; color: var(--cream); font-size: 1.6rem; text-decoration: none; }
+    .nav-logo span { color: var(--red); }
+    .nav-links { display: flex; gap: 2rem; list-style: none; }
+    .nav-links a { color: var(--warm-tan); text-decoration: none; font-size: 0.9rem; font-weight: 500; letter-spacing: 0.5px; text-transform: uppercase; transition: color 0.2s; }
+    .nav-links a:hover, .nav-links a.active { color: var(--red); }
+    .nav-cta { background: var(--red); color: #fff; padding: 8px 22px; border-radius: 2px; text-decoration: none; font-weight: 500; font-size: 0.9rem; }
+
+    .page-hero {
+      background: var(--charcoal); padding: 130px 8% 80px; position: relative; overflow: hidden;
+    }
+    .page-hero::before {
+      content: '★★★★★'; position: absolute; right: -2%; bottom: -10px;
+      font-size: 12vw; color: rgba(255,255,255,0.03);
+      white-space: nowrap; pointer-events: none; letter-spacing: -0.5rem;
+    }
+    .page-hero-tag { color: var(--red); font-size: 0.75rem; letter-spacing: 4px; text-transform: uppercase; margin-bottom: 0.75rem; }
+    .page-hero h1 { font-family: 'Shrikhand', cursive; font-size: clamp(3rem, 7vw, 5.5rem); color: var(--cream); }
+    .page-hero p { color: var(--warm-tan); font-size: 1.05rem; margin-top: 1rem; max-width: 500px; font-weight: 300; }
+
+    /* STATS BAR */
+    .stats-bar { background: var(--red); padding: 30px 8%; display: flex; gap: 3rem; flex-wrap: wrap; justify-content: center; }
+    .stat { text-align: center; }
+    .stat-num { font-family: 'Shrikhand', cursive; font-size: 2.5rem; color: #fff; line-height: 1; }
+    .stat-label { color: rgba(255,255,255,0.75); font-size: 0.8rem; letter-spacing: 2px; text-transform: uppercase; margin-top: 0.2rem; }
+
+    section { padding: 80px 8%; }
+    .section-tag { color: var(--red); font-size: 0.75rem; letter-spacing: 4px; text-transform: uppercase; margin-bottom: 0.75rem; }
+    .section-title { font-family: 'Shrikhand', cursive; font-size: clamp(2rem,4vw,3rem); margin-bottom: 0.75rem; }
+    .section-sub { color: var(--muted); font-size: 1rem; line-height: 1.7; }
+
+    /* FEATURED QUOTE */
+    .featured-quote { background: var(--charcoal); padding: 80px 8%; text-align: center; }
+    .big-quote { font-family: 'Noto Serif JP', serif; font-size: clamp(1.4rem, 3.5vw, 2.2rem); color: var(--cream); line-height: 1.7; max-width: 760px; margin: 0 auto 2rem; font-style: italic; }
+    .big-quote::before { content: '"'; font-family: 'Shrikhand', cursive; font-size: 5rem; color: var(--red); line-height: 0; vertical-align: -0.6em; margin-right: 0.2rem; }
+    .quote-author { color: var(--warm-tan); font-size: 0.9rem; }
+    .stars { color: #f39c12; font-size: 1.2rem; margin-bottom: 1.5rem; }
+
+    /* REVIEWS GRID */
+    .reviews-filter { display: flex; gap: 0.75rem; margin-bottom: 2.5rem; flex-wrap: wrap; }
+    .filter-btn { padding: 8px 20px; border: 1.5px solid #e0d4c0; background: none; border-radius: 30px; font-size: 0.85rem; cursor: pointer; transition: all 0.2s; font-family: 'DM Sans', sans-serif; }
+    .filter-btn.active, .filter-btn:hover { background: var(--red); border-color: var(--red); color: #fff; }
+    .reviews-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 1.5rem; }
+    .review-card {
+      background: #fff; border-radius: 4px; padding: 1.5rem;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .review-card:hover { transform: translateY(-4px); box-shadow: 0 8px 28px rgba(0,0,0,0.1); }
+    .review-header { display: flex; align-items: center; gap: 0.75rem; margin-bottom: 1rem; }
+    .reviewer-avatar { width: 44px; height: 44px; border-radius: 50%; background: linear-gradient(135deg, var(--warm-tan), var(--accent)); display: flex; align-items: center; justify-content: center; font-size: 1.4rem; flex-shrink: 0; }
+    .reviewer-name { font-weight: 600; font-size: 0.95rem; }
+    .reviewer-date { color: var(--muted); font-size: 0.8rem; }
+    .review-stars { color: #f39c12; font-size: 0.9rem; margin-bottom: 0.75rem; }
+    .review-dish { display: inline-block; background: var(--cream); border: 1px solid var(--warm-tan); padding: 3px 10px; border-radius: 2px; font-size: 0.75rem; color: var(--muted); margin-bottom: 0.75rem; }
+    .review-text { color: var(--muted); font-size: 0.9rem; line-height: 1.65; }
+    .review-verified { color: #2e7d32; font-size: 0.75rem; margin-top: 0.75rem; display: flex; align-items: center; gap: 0.3rem; }
+
+    /* WRITE REVIEW */
+    .write-review { background: #fff5e6; }
+    .review-form { max-width: 640px; margin-top: 2rem; }
+    .form-group { margin-bottom: 1.2rem; }
+    .form-group label { display: block; font-size: 0.85rem; font-weight: 500; margin-bottom: 0.4rem; color: var(--muted); }
+    .form-group input, .form-group select, .form-group textarea {
+      width: 100%; border: 1.5px solid #e0d4c0; border-radius: 3px;
+      padding: 10px 14px; font-family: 'DM Sans', sans-serif; font-size: 0.95rem;
+      background: #fff; transition: border-color 0.2s;
+    }
+    .form-group input:focus, .form-group select:focus, .form-group textarea:focus { outline: none; border-color: var(--red); }
+    .star-rating { display: flex; gap: 0.5rem; margin-bottom: 1.2rem; }
+    .star-rating span { font-size: 2rem; cursor: pointer; color: #ddd; transition: color 0.15s; }
+    .star-rating span.lit { color: #f39c12; }
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+    .submit-review { background: var(--red); color: #fff; border: none; padding: 14px 36px; border-radius: 2px; font-size: 1rem; font-weight: 500; cursor: pointer; transition: background 0.2s; font-family: 'DM Sans', sans-serif; }
+    .submit-review:hover { background: var(--dark-red); }
+    .form-success { background: #e8f5e9; border: 1.5px solid #81c784; border-radius: 3px; padding: 1rem 1.2rem; color: #2e7d32; font-size: 0.95rem; display: none; margin-top: 1rem; }
+
+    footer { background: #111; color: var(--warm-tan); padding: 40px 8% 25px; text-align: center; }
+    .footer-logo-sm { font-family: 'Shrikhand', cursive; font-size: 1.4rem; color: var(--cream); margin-bottom: 1rem; }
+    .footer-logo-sm span { color: var(--red); }
+    .footer-links { display: flex; gap: 2rem; justify-content: center; flex-wrap: wrap; margin-bottom: 1.5rem; }
+    .footer-links a { color: #888; text-decoration: none; font-size: 0.85rem; }
+    .footer-links a:hover { color: var(--red); }
+    .footer-copy { color: #555; font-size: 0.8rem; border-top: 1px solid #222; padding-top: 1.2rem; }
+
+    @media(max-width:520px) { .nav-links{display:none} .form-row{grid-template-columns:1fr} }
+  </style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html" class="nav-logo">Tanuki<span>ラーメン</span></a>
+  <ul class="nav-links">
+    <li><a href="index.html">Home</a></li>
+    <li><a href="about.html">About</a></li>
+    <li><a href="sales.html">Sales</a></li>
+    <li><a href="order.html">Order</a></li>
+    <li><a href="testimonials.html" class="active">Reviews</a></li>
+    <li><a href="contact.html">Contact</a></li>
+  </ul>
+  <a href="order.html" class="nav-cta">Order Now</a>
+</nav>
+
+<div class="page-hero">
+  <p class="page-hero-tag">Customer Reviews</p>
+  <h1>What Our Customers<br>Are Saying.</h1>
+  <p>Real reviews from real ramen lovers. No filter, just honest feedback.</p>
+</div>
+
+<div class="stats-bar">
+  <div class="stat"><div class="stat-num">4.9</div><div class="stat-label">Average Rating</div></div>
+  <div class="stat"><div class="stat-num">2,847</div><div class="stat-label">Total Reviews</div></div>
+  <div class="stat"><div class="stat-num">98%</div><div class="stat-label">Would Reorder</div></div>
+  <div class="stat"><div class="stat-num">50K+</div><div class="stat-label">Bowls Delivered</div></div>
+</div>
+
+<div class="featured-quote">
+  <div class="stars">★★★★★</div>
+  <div class="big-quote">The tonkotsu here ruins every other ramen for you. I'm not joking. I've been to Japan three times and this bowl rivals anything I had in Fukuoka.</div>
+  <div class="quote-author">— Michael T., Verified Customer · August 2025</div>
+</div>
+
+<section>
+  <p class="section-tag">All Reviews</p>
+  <h2 class="section-title">What People Say</h2>
+  <div class="reviews-filter">
+    <button class="filter-btn active" onclick="filterReviews('all', this)">All Reviews</button>
+    <button class="filter-btn" onclick="filterReviews('5', this)">★★★★★</button>
+    <button class="filter-btn" onclick="filterReviews('ramen', this)">Ramen</button>
+    <button class="filter-btn" onclick="filterReviews('noodles', this)">Noodles</button>
+    <button class="filter-btn" onclick="filterReviews('delivery', this)">Delivery</button>
+  </div>
+  <div class="reviews-grid" id="reviews-grid">
+    <!-- rendered via JS -->
+  </div>
+</section>
+
+<section class="write-review">
+  <p class="section-tag">Leave a Review</p>
+  <h2 class="section-title">Share Your Experience</h2>
+  <p class="section-sub">Had a bowl recently? Tell the world what you thought.</p>
+  <div class="review-form">
+    <div style="margin:1.5rem 0 0.5rem">
+      <label style="font-size:0.85rem;font-weight:500;color:var(--muted)">Your Rating</label>
+      <div class="star-rating" id="star-rating">
+        <span onclick="setStars(1)">★</span>
+        <span onclick="setStars(2)">★</span>
+        <span onclick="setStars(3)">★</span>
+        <span onclick="setStars(4)">★</span>
+        <span onclick="setStars(5)">★</span>
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label>Your Name</label>
+        <input type="text" id="r-name" placeholder="Yuki M." />
+      </div>
+      <div class="form-group">
+        <label>What did you order?</label>
+        <select id="r-dish">
+          <option value="">Select dish</option>
+          <option>Hakata Tonkotsu</option>
+          <option>Sapporo Miso</option>
+          <option>Tantanmen</option>
+          <option>Tokyo Shoyu</option>
+          <option>Yakisoba</option>
+          <option>Zaru Soba</option>
+          <option>Beef Udon</option>
+          <option>Other</option>
+        </select>
+      </div>
+    </div>
+    <div class="form-group">
+      <label>Your Review</label>
+      <textarea id="r-text" rows="4" placeholder="Tell us about your experience..."></textarea>
+    </div>
+    <button class="submit-review" onclick="submitReview()">Submit Review →</button>
+    <div class="form-success" id="review-success">🎉 Thank you for your review! It'll be published shortly.</div>
+  </div>
+</section>
+
+<footer>
+  <div class="footer-logo-sm">Tanuki<span>ラーメン</span></div>
+  <div class="footer-links">
+    <a href="index.html">Home</a><a href="about.html">About</a><a href="sales.html">Sales</a>
+    <a href="order.html">Order</a><a href="testimonials.html">Reviews</a><a href="contact.html">Contact</a>
+  </div>
+  <div class="footer-copy">© 2025 Tanuki Ramen. All rights reserved.</div>
+</footer>
+
+<script>
+const REVIEWS = [
+  { name:'Michael T.', avatar:'👨', date:'Aug 2025', stars:5, dish:'Hakata Tonkotsu', category:'ramen', text:'The tonkotsu here ruins every other ramen for you. Rich, cloudy, impossibly good. The chashu just melts. 10/10 every time.' },
+  { name:'Sarah K.', avatar:'👩', date:'Aug 2025', stars:5, dish:'Sapporo Miso', category:'ramen', text:'I never thought I\'d prefer miso over tonkotsu until I tried this. The corn and butter combo is just *chef\'s kiss*.' },
+  { name:'James L.', avatar:'🧑', date:'Jul 2025', stars:5, dish:'Hakata Tonkotsu', category:'delivery', text:'Delivered in 28 minutes and still piping hot. How?! The insulated packaging is genius. My whole family is now obsessed.' },
+  { name:'Priya N.', avatar:'👩‍🦱', date:'Jul 2025', stars:5, dish:'Veggie Shio', category:'ramen', text:'Finally a ramen place that takes vegetarian options seriously. The yuzu shio is delicate, complex and just stunning.' },
+  { name:'Tom W.', avatar:'👴', date:'Jul 2025', stars:4, dish:'Yakisoba', category:'noodles', text:'Really great yakisoba — best I\'ve had outside Japan. Slightly too saucy for my taste but my wife loved it exactly as is!' },
+  { name:'Aiko S.', avatar:'👩‍🦰', date:'Jun 2025', stars:5, dish:'Tantanmen', category:'ramen', text:'As someone who grew up in Tokyo, this tantanmen genuinely surprised me. The Sichuan pepper balance is perfect. Rare find.' },
+  { name:'David R.', avatar:'🧔', date:'Jun 2025', stars:5, dish:'Beef Udon', category:'noodles', text:'The udon noodles were perfectly thick and chewy, and the wagyu just elevated everything. Felt like a proper restaurant meal at home.' },
+  { name:'Lisa M.', avatar:'👩‍💼', date:'Jun 2025', stars:5, dish:'Tsukemen', category:'noodles', text:'Tsukemen is my absolute weakness and this did not disappoint. The concentrated dipping broth was divine. Already ordered again.' },
+  { name:'Raj P.', avatar:'👨‍💻', date:'May 2025', stars:4, dish:'Pork Gyoza', category:'delivery', text:'Quick delivery, generous portions, great flavour. Gyoza were a little greasy but the ponzu sauce saved them. Overall 8.5/10.' },
+  { name:'Emma C.', avatar:'👧', date:'May 2025', stars:5, dish:'Hakata Tonkotsu', category:'ramen', text:'I order from here every single Friday. My Friday ritual is now sacred. Tanuki has ruined takeaway for me forever — in the best way.' },
+  { name:'Kevin H.', avatar:'🧑‍🎤', date:'May 2025', stars:5, dish:'Cold Zaru Soba', category:'noodles', text:'Perfect summer dish. Ice cold, perfectly textured soba, great dipping sauce. Refreshing and light but totally satisfying.' },
+  { name:'Nina B.', avatar:'👩‍🏫', date:'Apr 2025', stars:5, dish:'Tantanmen', category:'ramen', text:'I asked for extra spicy and they delivered. Bold, fiery, deeply satisfying. Exactly the kind of ramen I\'d walk 2 miles for.' },
+];
+
+let activeFilter = 'all';
+let selectedStars = 0;
+
+function renderReviews() {
+  const grid = document.getElementById('reviews-grid');
+  let filtered = REVIEWS;
+  if (activeFilter !== 'all') {
+    if (activeFilter === '5') filtered = REVIEWS.filter(r => r.stars === 5);
+    else filtered = REVIEWS.filter(r => r.category === activeFilter);
+  }
+  grid.innerHTML = filtered.map(r => `
+    <div class="review-card">
+      <div class="review-header">
+        <div class="reviewer-avatar">${r.avatar}</div>
+        <div>
+          <div class="reviewer-name">${r.name}</div>
+          <div class="reviewer-date">${r.date}</div>
+        </div>
+      </div>
+      <div class="review-stars">${'★'.repeat(r.stars)}${'☆'.repeat(5-r.stars)}</div>
+      <div class="review-dish">🍜 ${r.dish}</div>
+      <div class="review-text">${r.text}</div>
+      <div class="review-verified">✓ Verified Purchase</div>
+    </div>
+  `).join('');
+}
+
+function filterReviews(filter, btn) {
+  activeFilter = filter;
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  renderReviews();
+}
+
+function setStars(n) {
+  selectedStars = n;
+  document.querySelectorAll('.star-rating span').forEach((s, i) => {
+    s.classList.toggle('lit', i < n);
+  });
+}
+
+function submitReview() {
+  const name = document.getElementById('r-name').value.trim();
+  const dish = document.getElementById('r-dish').value;
+  const text = document.getElementById('r-text').value.trim();
+  if (!name || !dish || !text || selectedStars === 0) {
+    alert('Please fill in all fields and select a rating.'); return;
+  }
+  REVIEWS.unshift({ name, avatar:'😊', date:'Just Now', stars:selectedStars, dish, category:'ramen', text });
+  renderReviews();
+  document.getElementById('r-name').value = '';
+  document.getElementById('r-dish').value = '';
+  document.getElementById('r-text').value = '';
+  selectedStars = 0;
+  setStars(0);
+  const succ = document.getElementById('review-success');
+  succ.style.display = 'block';
+  setTimeout(() => succ.style.display = 'none', 4000);
+}
+
+renderReviews();
+</script>
+</body>
+</html>

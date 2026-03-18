@@ -1,0 +1,507 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Order Online – Tanuki Ramen</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Shrikhand&family=Noto+Serif+JP:wght@400;700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --red: #C0392B; --dark-red: #922B21; --cream: #FDF6EC;
+      --warm-tan: #E8D5B0; --charcoal: #1C1C1C; --muted: #6B5C4C; --accent: #E67E22;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'DM Sans', sans-serif; background: var(--cream); color: var(--charcoal); }
+
+    nav {
+      position: fixed; top: 0; width: 100%; z-index: 100;
+      background: rgba(28,28,28,0.97); display: flex; align-items: center;
+      justify-content: space-between; padding: 0 5%; height: 64px;
+      border-bottom: 2px solid var(--red);
+    }
+    .nav-logo { font-family: 'Shrikhand', cursive; color: var(--cream); font-size: 1.6rem; text-decoration: none; }
+    .nav-logo span { color: var(--red); }
+    .nav-links { display: flex; gap: 2rem; list-style: none; }
+    .nav-links a { color: var(--warm-tan); text-decoration: none; font-size: 0.9rem; font-weight: 500; letter-spacing: 0.5px; text-transform: uppercase; transition: color 0.2s; }
+    .nav-links a:hover, .nav-links a.active { color: var(--red); }
+    .nav-cta { background: var(--red); color: #fff; padding: 8px 22px; border-radius: 2px; text-decoration: none; font-weight: 500; font-size: 0.9rem; }
+
+    .page-hero {
+      background: var(--charcoal); padding: 120px 8% 60px;
+    }
+    .page-hero-tag { color: var(--red); font-size: 0.75rem; letter-spacing: 4px; text-transform: uppercase; margin-bottom: 0.75rem; }
+    .page-hero h1 { font-family: 'Shrikhand', cursive; font-size: clamp(2.5rem, 6vw, 4.5rem); color: var(--cream); }
+
+    .order-layout {
+      display: grid; grid-template-columns: 1fr 380px; gap: 0;
+      min-height: calc(100vh - 180px);
+    }
+
+    /* MENU PANEL */
+    .menu-panel { padding: 3rem 4% 3rem 8%; }
+    .menu-tabs { display: flex; gap: 0; margin-bottom: 2.5rem; border-bottom: 2px solid #e0d4c0; }
+    .menu-tab { padding: 10px 22px; border: none; background: none; font-family: 'DM Sans', sans-serif; font-size: 0.9rem; font-weight: 500; cursor: pointer; color: var(--muted); transition: all 0.2s; border-bottom: 2px solid transparent; margin-bottom: -2px; }
+    .menu-tab.active { color: var(--red); border-bottom-color: var(--red); }
+    .menu-section { display: none; }
+    .menu-section.active { display: block; }
+    .section-label { font-family: 'Shrikhand', cursive; font-size: 1.4rem; color: var(--charcoal); margin-bottom: 1.5rem; }
+
+    .menu-items { display: flex; flex-direction: column; gap: 1rem; }
+    .menu-item {
+      background: #fff; border-radius: 4px; padding: 1.2rem;
+      display: flex; align-items: center; gap: 1.2rem;
+      box-shadow: 0 1px 8px rgba(0,0,0,0.06);
+      transition: box-shadow 0.2s;
+    }
+    .menu-item:hover { box-shadow: 0 4px 20px rgba(0,0,0,0.1); }
+    .item-emoji { font-size: 2.8rem; flex-shrink: 0; width: 60px; text-align: center; }
+    .item-info { flex: 1; }
+    .item-name { font-family: 'Noto Serif JP', serif; font-weight: 700; font-size: 1rem; margin-bottom: 0.25rem; }
+    .item-desc { color: var(--muted); font-size: 0.83rem; line-height: 1.5; }
+    .item-tags { display: flex; gap: 0.4rem; margin-top: 0.4rem; flex-wrap: wrap; }
+    .tag { font-size: 0.68rem; padding: 2px 7px; border-radius: 2px; font-weight: 600; letter-spacing: 0.5px; text-transform: uppercase; }
+    .tag-spicy { background: #fde8e8; color: var(--red); }
+    .tag-veg { background: #e8f5e9; color: #2e7d32; }
+    .tag-new { background: #fff3e0; color: var(--accent); }
+    .tag-pop { background: #e8eaf6; color: #3949ab; }
+    .item-right { display: flex; flex-direction: column; align-items: flex-end; gap: 0.6rem; flex-shrink: 0; }
+    .item-price { font-family: 'Shrikhand', cursive; font-size: 1.3rem; color: var(--red); }
+    .qty-control { display: flex; align-items: center; gap: 0.5rem; }
+    .qty-btn { width: 28px; height: 28px; border-radius: 50%; border: 1.5px solid #ccc; background: none; font-size: 1rem; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.2s; }
+    .qty-btn:hover { border-color: var(--red); color: var(--red); }
+    .qty-num { font-weight: 700; min-width: 20px; text-align: center; font-size: 0.95rem; }
+    .add-to-cart { background: var(--red); color: #fff; border: none; padding: 7px 16px; border-radius: 2px; font-size: 0.85rem; font-weight: 500; cursor: pointer; transition: background 0.2s; }
+    .add-to-cart:hover { background: var(--dark-red); }
+
+    /* CART PANEL */
+    .cart-panel {
+      background: var(--charcoal); padding: 3rem 2rem;
+      position: sticky; top: 64px; height: calc(100vh - 64px);
+      overflow-y: auto; display: flex; flex-direction: column;
+    }
+    .cart-title { font-family: 'Shrikhand', cursive; font-size: 1.6rem; color: var(--cream); margin-bottom: 0.3rem; }
+    .cart-count { color: #888; font-size: 0.85rem; margin-bottom: 2rem; }
+    .cart-empty { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; color: #555; text-align: center; }
+    .cart-empty-icon { font-size: 3rem; margin-bottom: 1rem; }
+    .cart-items-list { flex: 1; }
+    .cart-item { display: flex; justify-content: space-between; align-items: center; padding: 0.85rem 0; border-bottom: 1px solid #2a2a2a; gap: 0.75rem; }
+    .cart-item-info { flex: 1; }
+    .cart-item-name { color: var(--warm-tan); font-size: 0.9rem; font-weight: 500; }
+    .cart-item-qty { color: #666; font-size: 0.8rem; }
+    .cart-item-price { color: var(--red); font-family: 'Shrikhand', cursive; font-size: 1.1rem; flex-shrink: 0; }
+    .cart-item-remove { background: none; border: none; color: #555; cursor: pointer; font-size: 1rem; transition: color 0.2s; padding: 0 4px; }
+    .cart-item-remove:hover { color: var(--red); }
+    .cart-divider { border: none; border-top: 1px solid #333; margin: 1rem 0; }
+    .cart-subtotal { display: flex; justify-content: space-between; color: #888; font-size: 0.9rem; margin-bottom: 0.5rem; }
+    .cart-delivery { display: flex; justify-content: space-between; color: #888; font-size: 0.9rem; margin-bottom: 0.5rem; }
+    .cart-total { display: flex; justify-content: space-between; color: var(--cream); font-size: 1.05rem; font-weight: 600; margin-bottom: 1.2rem; }
+    .promo-row { display: flex; gap: 0.5rem; margin-bottom: 1.2rem; }
+    .promo-input { flex: 1; background: #2a2a2a; border: 1px solid #444; border-radius: 2px; padding: 9px 12px; color: var(--cream); font-size: 0.85rem; font-family: 'DM Sans', sans-serif; }
+    .promo-input::placeholder { color: #555; }
+    .promo-btn { background: var(--accent); color: #fff; border: none; padding: 9px 16px; border-radius: 2px; font-size: 0.85rem; font-weight: 600; cursor: pointer; }
+    .checkout-btn { display: block; width: 100%; background: var(--red); color: #fff; border: none; padding: 16px; border-radius: 2px; font-size: 1rem; font-weight: 600; cursor: pointer; transition: background 0.2s; font-family: 'DM Sans', sans-serif; }
+    .checkout-btn:hover { background: var(--dark-red); }
+    .checkout-btn:disabled { background: #555; cursor: not-allowed; }
+
+    /* ORDER FORM MODAL */
+    .modal-overlay {
+      position: fixed; inset: 0; background: rgba(0,0,0,0.7);
+      display: none; align-items: center; justify-content: center; z-index: 200; padding: 1rem;
+    }
+    .modal-overlay.open { display: flex; }
+    .modal {
+      background: #fff; border-radius: 6px; padding: 2.5rem; width: 100%; max-width: 520px;
+      max-height: 90vh; overflow-y: auto;
+    }
+    .modal h2 { font-family: 'Shrikhand', cursive; font-size: 1.8rem; margin-bottom: 1.5rem; }
+    .form-group { margin-bottom: 1.2rem; }
+    .form-group label { display: block; font-size: 0.85rem; font-weight: 500; margin-bottom: 0.4rem; color: var(--muted); }
+    .form-group input, .form-group select, .form-group textarea {
+      width: 100%; border: 1.5px solid #e0d4c0; border-radius: 3px;
+      padding: 10px 14px; font-family: 'DM Sans', sans-serif; font-size: 0.95rem; color: var(--charcoal);
+      background: #fff; transition: border-color 0.2s;
+    }
+    .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
+      outline: none; border-color: var(--red);
+    }
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+    .modal-actions { display: flex; gap: 1rem; margin-top: 1.5rem; }
+    .modal-cancel { flex: 1; background: none; border: 1.5px solid #e0d4c0; padding: 13px; border-radius: 3px; font-size: 0.95rem; cursor: pointer; color: var(--muted); }
+    .modal-place { flex: 2; background: var(--red); color: #fff; border: none; padding: 13px; border-radius: 3px; font-size: 0.95rem; font-weight: 600; cursor: pointer; }
+    .modal-place:hover { background: var(--dark-red); }
+
+    /* SUCCESS */
+    .success-overlay {
+      position: fixed; inset: 0; background: rgba(0,0,0,0.8);
+      display: none; align-items: center; justify-content: center; z-index: 300;
+    }
+    .success-overlay.open { display: flex; }
+    .success-box { background: #fff; border-radius: 8px; padding: 3rem; text-align: center; max-width: 400px; }
+    .success-icon { font-size: 4rem; margin-bottom: 1rem; }
+    .success-box h2 { font-family: 'Shrikhand', cursive; font-size: 2rem; color: var(--red); margin-bottom: 0.75rem; }
+    .success-box p { color: var(--muted); line-height: 1.6; margin-bottom: 1.5rem; }
+    .success-close { background: var(--red); color: #fff; border: none; padding: 13px 30px; border-radius: 3px; font-size: 1rem; font-weight: 600; cursor: pointer; }
+
+    footer { background: #111; color: var(--warm-tan); padding: 40px 8% 25px; text-align: center; }
+    .footer-logo-sm { font-family: 'Shrikhand', cursive; font-size: 1.4rem; color: var(--cream); margin-bottom: 1rem; }
+    .footer-logo-sm span { color: var(--red); }
+    .footer-links { display: flex; gap: 2rem; justify-content: center; flex-wrap: wrap; margin-bottom: 1.5rem; }
+    .footer-links a { color: #888; text-decoration: none; font-size: 0.85rem; }
+    .footer-links a:hover { color: var(--red); }
+    .footer-copy { color: #555; font-size: 0.8rem; border-top: 1px solid #222; padding-top: 1.2rem; }
+
+    @media(max-width: 900px) {
+      .order-layout { grid-template-columns: 1fr; }
+      .cart-panel { position: fixed; bottom: 0; left: 0; right: 0; height: auto; max-height: 50vh; flex-direction: row; gap: 1rem; padding: 1rem; }
+      .menu-panel { padding-bottom: 340px; }
+    }
+    @media(max-width: 520px) { .nav-links { display: none; } .form-row { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html" class="nav-logo">Tanuki<span>ラーメン</span></a>
+  <ul class="nav-links">
+    <li><a href="index.html">Home</a></li>
+    <li><a href="about.html">About</a></li>
+    <li><a href="sales.html">Sales</a></li>
+    <li><a href="order.html" class="active">Order</a></li>
+    <li><a href="testimonials.html">Reviews</a></li>
+    <li><a href="contact.html">Contact</a></li>
+  </ul>
+  <a href="order.html" class="nav-cta">Order Now</a>
+</nav>
+
+<div class="page-hero">
+  <p class="page-hero-tag">Order Online</p>
+  <h1>Build Your Perfect Bowl.</h1>
+</div>
+
+<div class="order-layout">
+  <!-- MENU -->
+  <div class="menu-panel">
+    <div class="menu-tabs">
+      <button class="menu-tab active" onclick="switchTab('ramen',this)">Ramen</button>
+      <button class="menu-tab" onclick="switchTab('noodles',this)">Noodles</button>
+      <button class="menu-tab" onclick="switchTab('sides',this)">Sides</button>
+      <button class="menu-tab" onclick="switchTab('drinks',this)">Drinks</button>
+    </div>
+
+    <!-- RAMEN -->
+    <div class="menu-section active" id="ramen">
+      <div class="section-label">🍜 Signature Ramen</div>
+      <div class="menu-items" id="menu-ramen">
+        <!-- dynamically rendered -->
+      </div>
+    </div>
+
+    <!-- NOODLES -->
+    <div class="menu-section" id="noodles">
+      <div class="section-label">🥢 Noodle Dishes</div>
+      <div class="menu-items" id="menu-noodles"></div>
+    </div>
+
+    <!-- SIDES -->
+    <div class="menu-section" id="sides">
+      <div class="section-label">🥟 Sides & Extras</div>
+      <div class="menu-items" id="menu-sides"></div>
+    </div>
+
+    <!-- DRINKS -->
+    <div class="menu-section" id="drinks">
+      <div class="section-label">🍵 Drinks</div>
+      <div class="menu-items" id="menu-drinks"></div>
+    </div>
+  </div>
+
+  <!-- CART -->
+  <div class="cart-panel">
+    <div class="cart-title">Your Order</div>
+    <div class="cart-count" id="cart-count">0 items</div>
+    <div id="cart-empty" class="cart-empty">
+      <div class="cart-empty-icon">🛒</div>
+      <div>Your cart is empty.<br>Add some bowls to get started!</div>
+    </div>
+    <div id="cart-items-list" class="cart-items-list" style="display:none"></div>
+    <div id="cart-summary" style="display:none">
+      <hr class="cart-divider">
+      <div class="cart-subtotal"><span>Subtotal</span><span id="subtotal">$0.00</span></div>
+      <div class="cart-delivery"><span>Delivery</span><span>$2.99</span></div>
+      <div class="cart-total"><span>Total</span><span id="total">$0.00</span></div>
+      <div class="promo-row">
+        <input class="promo-input" id="promo-input" placeholder="Promo code" />
+        <button class="promo-btn" onclick="applyPromo()">Apply</button>
+      </div>
+      <div id="promo-msg" style="font-size:0.8rem;margin-bottom:0.75rem;color:var(--accent)"></div>
+      <button class="checkout-btn" onclick="openCheckout()">Checkout →</button>
+    </div>
+  </div>
+</div>
+
+<!-- CHECKOUT MODAL -->
+<div class="modal-overlay" id="checkout-modal">
+  <div class="modal">
+    <h2>Checkout 🍜</h2>
+    <div class="form-row">
+      <div class="form-group">
+        <label>First Name</label>
+        <input type="text" id="fname" placeholder="Kenji" />
+      </div>
+      <div class="form-group">
+        <label>Last Name</label>
+        <input type="text" id="lname" placeholder="Matsuda" />
+      </div>
+    </div>
+    <div class="form-group">
+      <label>Email</label>
+      <input type="email" id="email" placeholder="you@example.com" />
+    </div>
+    <div class="form-group">
+      <label>Phone</label>
+      <input type="tel" id="phone" placeholder="+1 555 000 0000" />
+    </div>
+    <div class="form-group">
+      <label>Delivery Address</label>
+      <input type="text" id="address" placeholder="123 Ramen Street, Tokyo District" />
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label>City</label>
+        <input type="text" id="city" placeholder="City" />
+      </div>
+      <div class="form-group">
+        <label>Zip Code</label>
+        <input type="text" id="zip" placeholder="10001" />
+      </div>
+    </div>
+    <div class="form-group">
+      <label>Payment Method</label>
+      <select id="payment">
+        <option value="">Select payment</option>
+        <option>Credit / Debit Card</option>
+        <option>PayPal</option>
+        <option>Apple Pay</option>
+        <option>Cash on Delivery</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label>Special Instructions</label>
+      <textarea id="notes" rows="2" placeholder="Extra spicy, no onions..."></textarea>
+    </div>
+    <div class="modal-actions">
+      <button class="modal-cancel" onclick="closeCheckout()">Cancel</button>
+      <button class="modal-place" onclick="placeOrder()">Place Order →</button>
+    </div>
+  </div>
+</div>
+
+<!-- SUCCESS MODAL -->
+<div class="success-overlay" id="success-modal">
+  <div class="success-box">
+    <div class="success-icon">🎉</div>
+    <h2>Order Placed!</h2>
+    <p>Your ramen is on its way! Estimated delivery: <strong>30–40 minutes</strong>. A confirmation has been sent to your email.</p>
+    <button class="success-close" onclick="closeSuccess()">Continue Shopping</button>
+  </div>
+</div>
+
+<footer>
+  <div class="footer-logo-sm">Tanuki<span>ラーメン</span></div>
+  <div class="footer-links">
+    <a href="index.html">Home</a><a href="about.html">About</a><a href="sales.html">Sales</a>
+    <a href="order.html">Order</a><a href="testimonials.html">Reviews</a><a href="contact.html">Contact</a>
+  </div>
+  <div class="footer-copy">© 2025 Tanuki Ramen. All rights reserved.</div>
+</footer>
+
+<script>
+const MENU = {
+  ramen: [
+    { id:'r1', name:'Hakata Tonkotsu', price:14.99, emoji:'🍜', desc:'Rich pork bone broth, thin noodles, chashu pork, soft egg & pickled ginger.', tags:['pop'] },
+    { id:'r2', name:'Sapporo Miso', price:13.99, emoji:'🥣', desc:'Hearty white miso, corn, butter, wavy noodles, grilled chicken & spring onions.', tags:['new'] },
+    { id:'r3', name:'Tantanmen', price:15.49, emoji:'🌶️', desc:'Sesame-chili broth, ground pork, bok choy, chili oil & Sichuan pepper.', tags:['spicy'] },
+    { id:'r4', name:'Tokyo Shoyu', price:13.49, emoji:'🍲', desc:'Soy-based clear broth, wavy noodles, chicken chashu, menma & nori.', tags:['pop'] },
+    { id:'r5', name:'Veggie Shio', price:12.99, emoji:'🌿', desc:'Delicate salt broth, mushrooms, tofu, bok choy, yuzu zest & soft egg.', tags:['veg'] },
+  ],
+  noodles: [
+    { id:'n1', name:'Yakisoba', price:11.99, emoji:'🥢', desc:'Pan-fried noodles, cabbage, pork belly & sweet yakisoba sauce.', tags:['pop'] },
+    { id:'n2', name:'Cold Zaru Soba', price:10.99, emoji:'❄️', desc:'Chilled buckwheat noodles with dipping tsuyu, nori & wasabi.', tags:['veg'] },
+    { id:'n3', name:'Beef Udon', price:14.49, emoji:'🐄', desc:'Thick udon noodles in a dashi broth, topped with wagyu beef & scallions.', tags:['new'] },
+    { id:'n4', name:'Tsukemen', price:15.99, emoji:'🫕', desc:'Dipping ramen — thick noodles with a bold concentrated tonkotsu dip.', tags:['pop'] },
+  ],
+  sides: [
+    { id:'s1', name:'Pork Gyoza (8 pcs)', price:8.99, emoji:'🥟', desc:'Pan-fried pork & cabbage dumplings with ponzu dipping sauce.', tags:['pop'] },
+    { id:'s2', name:'Edamame', price:4.99, emoji:'🫘', desc:'Steamed salted edamame — the perfect pre-bowl snack.', tags:['veg'] },
+    { id:'s3', name:'Takoyaki (6 pcs)', price:7.99, emoji:'🐙', desc:'Crispy octopus balls with mayo, takoyaki sauce & bonito flakes.', tags:[] },
+    { id:'s4', name:'Karaage Chicken', price:9.99, emoji:'🍗', desc:'Japanese fried chicken, crispy outside, juicy inside. With yuzu mayo.', tags:['pop'] },
+    { id:'s5', name:'Matcha Ice Cream', price:5.49, emoji:'🍦', desc:'Creamy matcha soft serve in a waffle cone.', tags:['veg','new'] },
+  ],
+  drinks: [
+    { id:'d1', name:'Matcha Latte', price:4.99, emoji:'🍵', desc:'Stone-ground matcha with steamed oat milk. Served hot or iced.', tags:['veg'] },
+    { id:'d2', name:'Ramune Soda', price:3.49, emoji:'🫧', desc:'Classic Japanese marble-seal soda — original or lychee flavour.', tags:['veg'] },
+    { id:'d3', name:'Sapporo Beer (330ml)', price:5.99, emoji:'🍺', desc:'Japan\'s finest lager, ice cold.', tags:[] },
+    { id:'d4', name:'Yuzu Lemonade', price:4.49, emoji:'🍋', desc:'Fresh-squeezed lemon with yuzu syrup & sparkling water.', tags:['veg','new'] },
+  ]
+};
+
+const cart = {};
+
+function tagHtml(tags) {
+  return tags.map(t => {
+    const map = { spicy:'tag-spicy', veg:'tag-veg', new:'tag-new', pop:'tag-pop' };
+    const label = { spicy:'🌶 Spicy', veg:'🌿 Veg', new:'New', pop:'Popular' };
+    return `<span class="tag ${map[t]}">${label[t]}</span>`;
+  }).join('');
+}
+
+function renderMenu() {
+  Object.entries(MENU).forEach(([cat, items]) => {
+    const container = document.getElementById('menu-' + cat);
+    container.innerHTML = items.map(item => `
+      <div class="menu-item" id="mi-${item.id}">
+        <div class="item-emoji">${item.emoji}</div>
+        <div class="item-info">
+          <div class="item-name">${item.name}</div>
+          <div class="item-desc">${item.desc}</div>
+          <div class="item-tags">${tagHtml(item.tags)}</div>
+        </div>
+        <div class="item-right">
+          <div class="item-price">$${item.price.toFixed(2)}</div>
+          <div class="qty-control">
+            <button class="qty-btn" onclick="changeQty('${item.id}', -1)">−</button>
+            <span class="qty-num" id="qty-${item.id}">0</span>
+            <button class="qty-btn" onclick="changeQty('${item.id}', 1)">+</button>
+          </div>
+          <button class="add-to-cart" onclick="addToCart('${item.id}')">Add</button>
+        </div>
+      </div>
+    `).join('');
+  });
+}
+
+function findItem(id) {
+  for (const items of Object.values(MENU)) {
+    const found = items.find(i => i.id === id);
+    if (found) return found;
+  }
+}
+
+function changeQty(id, delta) {
+  const span = document.getElementById('qty-' + id);
+  let val = parseInt(span.textContent) + delta;
+  if (val < 0) val = 0;
+  span.textContent = val;
+}
+
+function addToCart(id) {
+  const qty = parseInt(document.getElementById('qty-' + id).textContent);
+  if (qty === 0) return;
+  const item = findItem(id);
+  if (!item) return;
+  if (cart[id]) { cart[id].qty += qty; } else { cart[id] = { ...item, qty }; }
+  document.getElementById('qty-' + id).textContent = 0;
+  renderCart();
+}
+
+let discount = 0;
+function applyPromo() {
+  const code = document.getElementById('promo-input').value.trim().toUpperCase();
+  const msg = document.getElementById('promo-msg');
+  const codes = { TANUKI20:20, TANUKI50:50, LUNCH30:30, VEGGIE26:26, FREEFRI:0 };
+  if (codes[code] !== undefined) {
+    discount = codes[code];
+    msg.textContent = `✓ Code "${code}" applied — ${discount}% off!`;
+    msg.style.color = '#2e7d32';
+  } else {
+    discount = 0;
+    msg.textContent = 'Invalid code. Try TANUKI20';
+    msg.style.color = 'var(--red)';
+  }
+  renderCart();
+}
+
+function renderCart() {
+  const items = Object.values(cart).filter(i => i.qty > 0);
+  const countEl = document.getElementById('cart-count');
+  const emptyEl = document.getElementById('cart-empty');
+  const listEl = document.getElementById('cart-items-list');
+  const summaryEl = document.getElementById('cart-summary');
+
+  const totalItems = items.reduce((a, i) => a + i.qty, 0);
+  countEl.textContent = `${totalItems} item${totalItems !== 1 ? 's' : ''}`;
+
+  if (items.length === 0) {
+    emptyEl.style.display = 'flex';
+    listEl.style.display = 'none';
+    summaryEl.style.display = 'none';
+    return;
+  }
+
+  emptyEl.style.display = 'none';
+  listEl.style.display = 'block';
+  summaryEl.style.display = 'block';
+
+  listEl.innerHTML = items.map(i => `
+    <div class="cart-item">
+      <div class="cart-item-info">
+        <div class="cart-item-name">${i.emoji} ${i.name}</div>
+        <div class="cart-item-qty">× ${i.qty}</div>
+      </div>
+      <div class="cart-item-price">$${(i.price * i.qty).toFixed(2)}</div>
+      <button class="cart-item-remove" onclick="removeFromCart('${i.id}')">✕</button>
+    </div>
+  `).join('');
+
+  let subtotal = items.reduce((a, i) => a + i.price * i.qty, 0);
+  if (discount > 0) subtotal = subtotal * (1 - discount / 100);
+  const total = subtotal + 2.99;
+  document.getElementById('subtotal').textContent = '$' + subtotal.toFixed(2);
+  document.getElementById('total').textContent = '$' + total.toFixed(2);
+}
+
+function removeFromCart(id) {
+  delete cart[id];
+  renderCart();
+}
+
+function switchTab(cat, btn) {
+  document.querySelectorAll('.menu-section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.menu-tab').forEach(b => b.classList.remove('active'));
+  document.getElementById(cat).classList.add('active');
+  btn.classList.add('active');
+}
+
+function openCheckout() {
+  const items = Object.values(cart).filter(i => i.qty > 0);
+  if (items.length === 0) { alert('Your cart is empty!'); return; }
+  document.getElementById('checkout-modal').classList.add('open');
+}
+
+function closeCheckout() {
+  document.getElementById('checkout-modal').classList.remove('open');
+}
+
+function placeOrder() {
+  const fname = document.getElementById('fname').value.trim();
+  const email = document.getElementById('email').value.trim();
+  const address = document.getElementById('address').value.trim();
+  const payment = document.getElementById('payment').value;
+  if (!fname || !email || !address || !payment) {
+    alert('Please fill in all required fields.'); return;
+  }
+  closeCheckout();
+  Object.keys(cart).forEach(k => delete cart[k]);
+  renderCart();
+  document.getElementById('success-modal').classList.add('open');
+}
+
+function closeSuccess() {
+  document.getElementById('success-modal').classList.remove('open');
+}
+
+renderMenu();
+</script>
+</body>
+</html>

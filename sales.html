@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Sales & Deals – Tanuki Ramen</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Shrikhand&family=Noto+Serif+JP:wght@400;700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --red: #C0392B; --dark-red: #922B21; --cream: #FDF6EC;
+      --warm-tan: #E8D5B0; --charcoal: #1C1C1C; --muted: #6B5C4C; --accent: #E67E22;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'DM Sans', sans-serif; background: var(--cream); color: var(--charcoal); }
+
+    nav {
+      position: fixed; top: 0; width: 100%; z-index: 100;
+      background: rgba(28,28,28,0.97); display: flex; align-items: center;
+      justify-content: space-between; padding: 0 5%; height: 64px;
+      border-bottom: 2px solid var(--red);
+    }
+    .nav-logo { font-family: 'Shrikhand', cursive; color: var(--cream); font-size: 1.6rem; text-decoration: none; }
+    .nav-logo span { color: var(--red); }
+    .nav-links { display: flex; gap: 2rem; list-style: none; }
+    .nav-links a { color: var(--warm-tan); text-decoration: none; font-size: 0.9rem; font-weight: 500; letter-spacing: 0.5px; text-transform: uppercase; transition: color 0.2s; }
+    .nav-links a:hover, .nav-links a.active { color: var(--red); }
+    .nav-cta { background: var(--red); color: #fff; padding: 8px 22px; border-radius: 2px; text-decoration: none; font-weight: 500; font-size: 0.9rem; }
+
+    .page-hero {
+      background: var(--red); padding: 130px 8% 80px;
+      position: relative; overflow: hidden;
+    }
+    .page-hero::before {
+      content: 'SALE'; position: absolute; right: -2%; bottom: -20px;
+      font-family: 'Shrikhand', cursive; font-size: 22vw; color: rgba(0,0,0,0.1);
+      white-space: nowrap; pointer-events: none;
+    }
+    .page-hero-tag { color: rgba(255,255,255,0.7); font-size: 0.75rem; letter-spacing: 4px; text-transform: uppercase; margin-bottom: 0.75rem; }
+    .page-hero h1 { font-family: 'Shrikhand', cursive; font-size: clamp(3rem, 7vw, 5.5rem); color: #fff; }
+    .page-hero p { color: rgba(255,255,255,0.8); font-size: 1.1rem; margin-top: 1rem; max-width: 520px; font-weight: 300; }
+
+    /* COUNTDOWN */
+    .countdown-bar {
+      background: var(--charcoal); padding: 20px 8%;
+      display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1rem;
+    }
+    .countdown-label { color: var(--warm-tan); font-size: 0.9rem; }
+    .countdown-timer { display: flex; gap: 1.5rem; }
+    .ct-unit { text-align: center; }
+    .ct-num { font-family: 'Shrikhand', cursive; font-size: 2rem; color: var(--red); line-height: 1; }
+    .ct-label { color: #888; font-size: 0.7rem; letter-spacing: 2px; text-transform: uppercase; }
+
+    section { padding: 70px 8%; }
+    .section-tag { color: var(--red); font-size: 0.75rem; letter-spacing: 4px; text-transform: uppercase; margin-bottom: 0.75rem; }
+    .section-title { font-family: 'Shrikhand', cursive; font-size: clamp(2rem,4vw,3rem); margin-bottom: 1rem; }
+
+    /* DEAL CARDS */
+    .deals-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem; margin-top: 2.5rem; }
+    .deal-card {
+      background: #fff; border-radius: 4px; overflow: hidden;
+      box-shadow: 0 2px 16px rgba(0,0,0,0.06); position: relative;
+      transition: transform 0.25s, box-shadow 0.25s;
+    }
+    .deal-card:hover { transform: translateY(-6px); box-shadow: 0 14px 40px rgba(0,0,0,0.12); }
+    .deal-card.featured { border: 2px solid var(--red); }
+    .deal-ribbon {
+      position: absolute; top: 18px; right: -8px;
+      background: var(--red); color: #fff; font-size: 0.75rem; font-weight: 700;
+      padding: 5px 16px; letter-spacing: 1px;
+    }
+    .deal-ribbon::after { content: ''; position: absolute; bottom: -6px; right: 0; border: 3px solid transparent; border-top-color: var(--dark-red); border-right-color: var(--dark-red); }
+    .deal-img {
+      height: 180px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 5rem;
+    }
+    .deal-body { padding: 1.5rem; }
+    .deal-name { font-family: 'Noto Serif JP', serif; font-size: 1.15rem; font-weight: 700; margin-bottom: 0.4rem; }
+    .deal-desc { color: var(--muted); font-size: 0.9rem; line-height: 1.5; margin-bottom: 1.2rem; }
+    .deal-pricing { display: flex; align-items: baseline; gap: 0.75rem; margin-bottom: 1.2rem; }
+    .deal-original { font-size: 1rem; color: #aaa; text-decoration: line-through; }
+    .deal-sale { font-family: 'Shrikhand', cursive; font-size: 1.8rem; color: var(--red); }
+    .deal-save { background: #fff3e0; color: var(--accent); font-size: 0.75rem; font-weight: 700; padding: 3px 8px; border-radius: 2px; letter-spacing: 1px; }
+    .code-box { background: var(--cream); border: 1.5px dashed var(--red); border-radius: 3px; padding: 8px 14px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.2rem; }
+    .code-text { font-family: 'Noto Serif JP', serif; font-weight: 700; color: var(--red); letter-spacing: 2px; font-size: 1rem; }
+    .copy-btn { background: none; border: none; color: var(--muted); font-size: 0.8rem; cursor: pointer; transition: color 0.2s; }
+    .copy-btn:hover { color: var(--red); }
+    .deal-btn { display: block; background: var(--red); color: #fff; text-align: center; padding: 12px; border-radius: 2px; text-decoration: none; font-weight: 500; transition: background 0.2s; }
+    .deal-btn:hover { background: var(--dark-red); }
+
+    /* BUNDLE */
+    .bundle { background: var(--charcoal); }
+    .bundle .section-title { color: var(--cream); }
+    .bundle-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 3rem; margin-top: 2.5rem; align-items: center; }
+    .bundle-items { list-style: none; }
+    .bundle-items li { border-bottom: 1px solid #2a2a2a; padding: 1rem 0; display: flex; justify-content: space-between; align-items: center; }
+    .bundle-items li:last-child { border-bottom: none; }
+    .bundle-item-name { color: var(--warm-tan); font-size: 0.95rem; }
+    .bundle-item-price { color: #666; text-decoration: line-through; font-size: 0.9rem; }
+    .bundle-total { background: var(--red); border-radius: 4px; padding: 2rem; text-align: center; }
+    .bundle-total-label { color: rgba(255,255,255,0.7); font-size: 0.8rem; letter-spacing: 3px; text-transform: uppercase; margin-bottom: 0.5rem; }
+    .bundle-total-price { font-family: 'Shrikhand', cursive; font-size: 4rem; color: #fff; line-height: 1; }
+    .bundle-total-was { color: rgba(255,255,255,0.6); font-size: 0.9rem; text-decoration: line-through; margin-bottom: 1.5rem; }
+    .bundle-cta { display: block; background: #fff; color: var(--red); text-align: center; padding: 14px; border-radius: 2px; text-decoration: none; font-weight: 700; font-size: 1rem; margin-top: 1.2rem; }
+
+    /* LOYALTY */
+    .loyalty-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 2rem; margin-top: 2.5rem; }
+    .loyalty-step { text-align: center; position: relative; }
+    .loyalty-step::after { content: '→'; position: absolute; right: -1rem; top: 30px; color: var(--red); font-size: 1.2rem; }
+    .loyalty-step:last-child::after { display: none; }
+    .loyalty-circle { width: 80px; height: 80px; border-radius: 50%; background: var(--red); display: flex; align-items: center; justify-content: center; margin: 0 auto 1rem; font-size: 2rem; }
+    .loyalty-step-title { font-family: 'Noto Serif JP', serif; font-weight: 700; margin-bottom: 0.4rem; }
+    .loyalty-step-text { color: var(--muted); font-size: 0.88rem; line-height: 1.6; }
+
+    footer { background: #111; color: var(--warm-tan); padding: 40px 8% 25px; text-align: center; }
+    .footer-logo-sm { font-family: 'Shrikhand', cursive; font-size: 1.4rem; color: var(--cream); margin-bottom: 1rem; }
+    .footer-logo-sm span { color: var(--red); }
+    .footer-links { display: flex; gap: 2rem; justify-content: center; flex-wrap: wrap; margin-bottom: 1.5rem; }
+    .footer-links a { color: #888; text-decoration: none; font-size: 0.85rem; transition: color 0.2s; }
+    .footer-links a:hover { color: var(--red); }
+    .footer-copy { color: #555; font-size: 0.8rem; border-top: 1px solid #222; padding-top: 1.2rem; }
+
+    @media(max-width: 768px) {
+      .bundle-grid { grid-template-columns: 1fr; }
+      .countdown-bar { flex-direction: column; }
+      .nav-links { gap: 1rem; }
+    }
+    @media(max-width: 520px) { .nav-links { display: none; } }
+  </style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html" class="nav-logo">Tanuki<span>ラーメン</span></a>
+  <ul class="nav-links">
+    <li><a href="index.html">Home</a></li>
+    <li><a href="about.html">About</a></li>
+    <li><a href="sales.html" class="active">Sales</a></li>
+    <li><a href="order.html">Order</a></li>
+    <li><a href="testimonials.html">Reviews</a></li>
+    <li><a href="contact.html">Contact</a></li>
+  </ul>
+  <a href="order.html" class="nav-cta">Order Now</a>
+</nav>
+
+<div class="page-hero">
+  <p class="page-hero-tag">Hot Deals</p>
+  <h1>Save Big<br>Eat Well.</h1>
+  <p>Exclusive discounts, bundles & loyalty rewards — because great ramen should be affordable.</p>
+</div>
+
+<div class="countdown-bar">
+  <span class="countdown-label">🔥 Summer Sale ends in:</span>
+  <div class="countdown-timer">
+    <div class="ct-unit"><div class="ct-num" id="days">07</div><div class="ct-label">Days</div></div>
+    <div class="ct-unit"><div class="ct-num" id="hours">14</div><div class="ct-label">Hours</div></div>
+    <div class="ct-unit"><div class="ct-num" id="mins">32</div><div class="ct-label">Mins</div></div>
+    <div class="ct-unit"><div class="ct-num" id="secs">00</div><div class="ct-label">Secs</div></div>
+  </div>
+</div>
+
+<section>
+  <p class="section-tag">Current Offers</p>
+  <h2 class="section-title">Today's Best Deals</h2>
+  <div class="deals-grid">
+
+    <div class="deal-card featured">
+      <span class="deal-ribbon">BEST VALUE</span>
+      <div class="deal-img" style="background: linear-gradient(135deg,#922B21,#e67e22)">🍜</div>
+      <div class="deal-body">
+        <div class="deal-name">Summer Ramen Special</div>
+        <div class="deal-desc">Any 2 signature ramen bowls for the price of one. Mix and match — tonkotsu, miso or tantanmen.</div>
+        <div class="deal-pricing">
+          <span class="deal-original">$29.98</span>
+          <span class="deal-sale">$14.99</span>
+          <span class="deal-save">SAVE 50%</span>
+        </div>
+        <div class="code-box">
+          <span class="code-text">TANUKI50</span>
+          <button class="copy-btn" onclick="copyCode('TANUKI50',this)">Copy</button>
+        </div>
+        <a href="order.html" class="deal-btn">Order Now</a>
+      </div>
+    </div>
+
+    <div class="deal-card">
+      <div class="deal-img" style="background: linear-gradient(135deg,#1565c0,#42a5f5)">🥢</div>
+      <div class="deal-body">
+        <div class="deal-name">Noodle Lunch Box</div>
+        <div class="deal-desc">Any yakisoba or cold soba + a gyoza side + soft drink, Monday–Friday noon to 3pm only.</div>
+        <div class="deal-pricing">
+          <span class="deal-original">$18.50</span>
+          <span class="deal-sale">$12.99</span>
+          <span class="deal-save">SAVE 30%</span>
+        </div>
+        <div class="code-box">
+          <span class="code-text">LUNCH30</span>
+          <button class="copy-btn" onclick="copyCode('LUNCH30',this)">Copy</button>
+        </div>
+        <a href="order.html" class="deal-btn">Order Now</a>
+      </div>
+    </div>
+
+    <div class="deal-card">
+      <div class="deal-img" style="background: linear-gradient(135deg,#2e7d32,#81c784)">🥗</div>
+      <div class="deal-body">
+        <div class="deal-name">Veggie Feast</div>
+        <div class="deal-desc">Our full vegetarian menu — miso ramen, veggie udon & agedashi tofu — bundled at a special rate.</div>
+        <div class="deal-pricing">
+          <span class="deal-original">$34.00</span>
+          <span class="deal-sale">$24.99</span>
+          <span class="deal-save">SAVE 26%</span>
+        </div>
+        <div class="code-box">
+          <span class="code-text">VEGGIE26</span>
+          <button class="copy-btn" onclick="copyCode('VEGGIE26',this)">Copy</button>
+        </div>
+        <a href="order.html" class="deal-btn">Order Now</a>
+      </div>
+    </div>
+
+    <div class="deal-card">
+      <div class="deal-img" style="background: linear-gradient(135deg,#6a1b9a,#ce93d8)">🌙</div>
+      <div class="deal-body">
+        <div class="deal-name">Late Night Bowl</div>
+        <div class="deal-desc">Order after 9pm and get 20% off your entire cart — because midnight cravings deserve a discount.</div>
+        <div class="deal-pricing">
+          <span class="deal-original">From $14.99</span>
+          <span class="deal-sale">20% Off</span>
+        </div>
+        <div class="code-box">
+          <span class="code-text">TANUKI20</span>
+          <button class="copy-btn" onclick="copyCode('TANUKI20',this)">Copy</button>
+        </div>
+        <a href="order.html" class="deal-btn">Order Now</a>
+      </div>
+    </div>
+
+    <div class="deal-card">
+      <div class="deal-img" style="background: linear-gradient(135deg,#e65100,#ffcc02)">🎁</div>
+      <div class="deal-body">
+        <div class="deal-name">Free Delivery Friday</div>
+        <div class="deal-desc">Every Friday, delivery is on us — no minimum order required. Hot bowls, zero delivery fee.</div>
+        <div class="deal-pricing">
+          <span class="deal-original">$4.99 delivery</span>
+          <span class="deal-sale">FREE</span>
+        </div>
+        <div class="code-box">
+          <span class="code-text">FREEFRI</span>
+          <button class="copy-btn" onclick="copyCode('FREEFRI',this)">Copy</button>
+        </div>
+        <a href="order.html" class="deal-btn">Order Now</a>
+      </div>
+    </div>
+
+    <div class="deal-card">
+      <div class="deal-img" style="background: linear-gradient(135deg,#c0392b,#8e44ad)">🫕</div>
+      <div class="deal-body">
+        <div class="deal-name">Family Pack</div>
+        <div class="deal-desc">4 large ramen bowls + 2 gyoza sides + 4 soft drinks. Perfect for the whole family or a group of friends.</div>
+        <div class="deal-pricing">
+          <span class="deal-original">$72.00</span>
+          <span class="deal-sale">$52.99</span>
+          <span class="deal-save">SAVE 26%</span>
+        </div>
+        <div class="code-box">
+          <span class="code-text">FAMILY4</span>
+          <button class="copy-btn" onclick="copyCode('FAMILY4',this)">Copy</button>
+        </div>
+        <a href="order.html" class="deal-btn">Order Now</a>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<section class="bundle">
+  <p class="section-tag" style="color:var(--red)">Best Bundle</p>
+  <h2 class="section-title">The Ultimate Ramen Kit</h2>
+  <div class="bundle-grid">
+    <ul class="bundle-items">
+      <li><span class="bundle-item-name">🍜 Hakata Tonkotsu (Large)</span><span class="bundle-item-price">$14.99</span></li>
+      <li><span class="bundle-item-name">🥣 Sapporo Miso (Large)</span><span class="bundle-item-price">$13.99</span></li>
+      <li><span class="bundle-item-name">🌶️ Tantanmen (Large)</span><span class="bundle-item-price">$15.49</span></li>
+      <li><span class="bundle-item-name">🥟 Pork Gyoza (8 pcs)</span><span class="bundle-item-price">$8.99</span></li>
+      <li><span class="bundle-item-name">🍱 Edamame & Takoyaki</span><span class="bundle-item-price">$9.50</span></li>
+      <li><span class="bundle-item-name">🍵 Matcha Ice Cream × 3</span><span class="bundle-item-price">$10.50</span></li>
+    </ul>
+    <div class="bundle-total">
+      <div class="bundle-total-label">Bundle Price</div>
+      <div class="bundle-total-price">$59.99</div>
+      <div class="bundle-total-was">Was $73.46</div>
+      <div style="color:rgba(255,255,255,0.8);font-size:0.85rem">Use code: <strong>ULTIMATEKIT</strong></div>
+      <a href="order.html" class="bundle-cta">Get This Bundle →</a>
+    </div>
+  </div>
+</section>
+
+<section>
+  <p class="section-tag">Loyalty Program</p>
+  <h2 class="section-title">Earn While You Slurp</h2>
+  <div class="loyalty-grid">
+    <div class="loyalty-step">
+      <div class="loyalty-circle">📱</div>
+      <div class="loyalty-step-title">Sign Up Free</div>
+      <div class="loyalty-step-text">Create your Tanuki account online in under 60 seconds.</div>
+    </div>
+    <div class="loyalty-step">
+      <div class="loyalty-circle">🍜</div>
+      <div class="loyalty-step-title">Order & Earn Points</div>
+      <div class="loyalty-step-text">Earn 10 points per $1 spent on every order, every day.</div>
+    </div>
+    <div class="loyalty-step">
+      <div class="loyalty-circle">🏆</div>
+      <div class="loyalty-step-title">Reach Gold Status</div>
+      <div class="loyalty-step-text">500 points = Gold member. Unlock exclusive deals & early access.</div>
+    </div>
+    <div class="loyalty-step">
+      <div class="loyalty-circle">🎁</div>
+      <div class="loyalty-step-title">Redeem Rewards</div>
+      <div class="loyalty-step-text">Trade points for free bowls, sides, or mystery prizes.</div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="footer-logo-sm">Tanuki<span>ラーメン</span></div>
+  <div class="footer-links">
+    <a href="index.html">Home</a><a href="about.html">About</a><a href="sales.html">Sales</a>
+    <a href="order.html">Order</a><a href="testimonials.html">Reviews</a><a href="contact.html">Contact</a>
+  </div>
+  <div class="footer-copy">© 2025 Tanuki Ramen. All rights reserved.</div>
+</footer>
+
+<script>
+  // Countdown Timer
+  const endDate = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000 + 14 * 60 * 60 * 1000);
+  setInterval(() => {
+    const diff = endDate - Date.now();
+    if (diff <= 0) return;
+    document.getElementById('days').textContent = String(Math.floor(diff/86400000)).padStart(2,'0');
+    document.getElementById('hours').textContent = String(Math.floor((diff%86400000)/3600000)).padStart(2,'0');
+    document.getElementById('mins').textContent = String(Math.floor((diff%3600000)/60000)).padStart(2,'0');
+    document.getElementById('secs').textContent = String(Math.floor((diff%60000)/1000)).padStart(2,'0');
+  }, 1000);
+
+  function copyCode(code, btn) {
+    navigator.clipboard.writeText(code).catch(()=>{});
+    btn.textContent = '✓ Copied!';
+    btn.style.color = 'var(--red)';
+    setTimeout(() => { btn.textContent = 'Copy'; btn.style.color = ''; }, 2000);
+  }
+</script>
+</body>
+</html>
